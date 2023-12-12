@@ -24,21 +24,17 @@ pub fn day4(input: String) -> String {
                 .len() as i32
         })
         .collect();
-    (0..pt.len())
-        .fold(Vec::default(), |acc, idx| {
-            let next_value = (0..idx)
-                .rev()
-                .zip(pt.iter())
-                .map(|(i, p)| (i as i32) < *p)
-                .map(|r| r as i32)
-                .zip(acc.iter())
-                .map(|(a, b)| a * (*b))
-                .sum::<i32>();
-            acc.into_iter()
-                .chain([1 + next_value].into_iter())
-                .collect()
-        })
-        .iter()
-        .sum::<i32>()
-        .to_string()
+    let mut result = Vec::default();
+    for idx in 0..pt.len() {
+        let next_value = (0..idx)
+            .rev()
+            .zip(pt.iter())
+            .map(|(i, p)| (i as i32) < *p)
+            .map(|r| r as i32)
+            .zip(result.iter())
+            .map(|(a, b)| a * (*b))
+            .sum::<i32>();
+        result.push(next_value + 1);
+    }
+    result.iter().sum::<i32>().to_string()
 }
