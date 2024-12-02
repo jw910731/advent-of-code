@@ -51,7 +51,6 @@ pub fn day3(input: String) -> String{
         .map(|(row_id, row)| {
             let row_map: Vec<Vec<_>> = map.iter().skip(max(row_id, 1) - 1).take(min(3, row_id + 2)).map(|s|s.chars().collect()).collect();
             let row_map_filter = row_map.clone();
-            let row_map_map = map[row_id];
             let ret = row
                 .iter()
                 .filter_map(move |(start, end)| {
