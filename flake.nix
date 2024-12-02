@@ -4,6 +4,9 @@
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
     devenv.inputs.nixpkgs.follows = "nixpkgs";
+
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs = { nixpkgs.follows = "nixpkgs"; };
   };
 
   nixConfig = {
@@ -32,9 +35,14 @@
               modules = [
                 {
                   # https://devenv.sh/reference/options/
-                  packages = [ ];
+                  packages = [ ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+                    pkgs.darwin.apple_sdk.frameworks.SystemConfiguration
+                  ]; 
 
-                  languages.rust.enable = true;
+                  languages.rust = {
+                    enable = true;
+                    channel = "nightly";
+                  };
                 }
               ];
             };

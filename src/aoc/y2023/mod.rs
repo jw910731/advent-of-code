@@ -1,7 +1,6 @@
-mod day1;
-mod day2;
-mod day3;
-mod day4;
+use advent_of_code_macros::match_module;
+
+match_module!("day[0-9]+", fn(String) -> String);
 
 fn empty(_input: String) -> String {
     todo!("This challenge is not yet completed");
