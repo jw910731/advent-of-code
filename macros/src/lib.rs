@@ -3,7 +3,6 @@
 use std::fs;
 
 use proc_macro::{Span, TokenStream};
-use procout;
 use quote::TokenStreamExt;
 use regex::Regex;
 use syn::{parse::Parse, parse_macro_input, spanned::Spanned, Error, LitStr, Token, TypeBareFn};
@@ -134,9 +133,5 @@ pub fn match_module(input: TokenStream) -> TokenStream {
         Ok(stmt)
     })();
 
-    let val = output.unwrap_or_else(syn::Error::into_compile_error);
-
-    procout::procout(&val, None, None);
-
-    val.into()
+    output.unwrap_or_else(syn::Error::into_compile_error).into()
 }
