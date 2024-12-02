@@ -6,13 +6,11 @@ pub fn day1(input: String)->String{
         let occurrence: Vec<_> = numbers
             .iter()
             .enumerate()
-            .map(|(i, x)|
+            .flat_map(|(i, x)|
                 line
                     .match_indices(x)
                     .map(|(index, _)| (index, i))
-                    .collect::<Vec<_>>()
-            )
-            .flatten()
+                    .collect::<Vec<_>>())
             .collect();
         let mut digits = line
             .chars()
@@ -27,7 +25,7 @@ pub fn day1(input: String)->String{
                     c
                 }
             })
-            .filter(|c| c.is_digit(10));
+            .filter(|c| c.is_ascii_digit());
         let first: i32 = digits.next().unwrap().to_string().parse().unwrap();
         let last: i32 = digits.last().map(|c| c.to_string().parse().unwrap()).unwrap_or_else(||first);
         first*10+last

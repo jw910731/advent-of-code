@@ -80,16 +80,16 @@ impl Aoc {
                 .create(true)
                 .read(true)
                 .write(true)
-                .open(&cache_file_path)
+                .open(cache_file_path)
                 .expect("Cannot open file");
             if let Err(e) = file.write_all(text.clone().into_bytes().by_ref()) {
-                eprintln!("Warning: Failed to write cache: {}", e.to_string());
+                eprintln!("Warning: Failed to write cache: {}", e);
             }
             Ok(text)
         } else {
             let mut file = File::options()
                 .read(true)
-                .open(&cache_file_path)
+                .open(cache_file_path)
                 .expect("Cannot open file");
             let mut text = String::new();
             file.read_to_string(&mut text)

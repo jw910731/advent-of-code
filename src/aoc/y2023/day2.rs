@@ -13,8 +13,7 @@ impl Cubes {
         // input example: "3 blue, 4 red"
         let raw_cubes: Vec<_> = input
             .split(",")
-            .map(|s| s.split_whitespace())
-            .flatten()
+            .flat_map(|s| s.split_whitespace())
             .collect();
         let (red, green, blue) = colors
             .iter()
@@ -49,7 +48,7 @@ pub fn day2(input: String) -> String{
             let game_number: i64 = game_str.replace("Game ", "").parse().unwrap();
             let rounds: Vec<_> = content_str
                 .split(";")
-                .map(|round| Cubes::parse(round))
+                .map(Cubes::parse)
                 .collect();
             let mut max_cube = Cubes{red: 0, green: 0, blue: 0};
             for cube in rounds {

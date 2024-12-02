@@ -5,7 +5,7 @@ pub fn day3(input: String) -> String{
     let map: Vec<&str> = input
         .lines()
         .collect();
-    assert!(map.len() > 0, "Map row is 0");
+    assert!(!map.is_empty(), "Map row is 0");
     let is_symbol = |c: char| {
         // !c.is_digit(10) && c != '.'
         c == '*'
@@ -26,15 +26,13 @@ pub fn day3(input: String) -> String{
         let mut start_index: Option<usize> = None;
 
         for (i, ch) in vec.chars().enumerate() {
-            if ch.is_digit(10) {
+            if ch.is_ascii_digit() {
                 if start_index.is_none() {
                     start_index = Some(i);
                 }
-            } else {
-                if let Some(start) = start_index {
-                    pairs.push((start, i - 1));
-                    start_index = None;
-                }
+            } else if let Some(start) = start_index {
+                pairs.push((start, i - 1));
+                start_index = None;
             }
         }
 
@@ -48,7 +46,7 @@ pub fn day3(input: String) -> String{
     let ret = result
         .iter()
         .enumerate()
-        .map(|(row_id, row)| {
+        .flat_map(|(row_id, row)| {
             let row_map: Vec<Vec<_>> = map.iter().skip(max(row_id, 1) - 1).take(min(3, row_id + 2)).map(|s|s.chars().collect()).collect();
             let row_map_filter = row_map.clone();
             let ret = row
@@ -66,11 +64,10 @@ pub fn day3(input: String) -> String{
                             }
                         }
                     }
-                    return None;
+                    None
                 });
             ret
         })
-        .flatten()
         .sorted_by(|(_, _, arid, acid, _), (_, _, brid, bcid, _)|
             (*arid, *acid).cmp(&(*brid, *bcid)))
         .tuple_windows::<(_, _)>()
