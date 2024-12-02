@@ -55,13 +55,8 @@ impl Aoc {
         let cache_file_path_str = format!(".cache/{}.in", date);
         let cache_file_path = Path::new(&cache_file_path_str);
         // fetch data from internet or not based on cache file existence
-        let fetch: bool = fs::metadata(cache_file_path.clone()).is_err();
-        let mut file = File::options()
-            .create(true)
-            .read(true)
-            .write(true)
-            .open(&cache_file_path)
-            .expect("Cannot open file");
+        let fetch: bool = fs::metadata(cache_file_path).is_err();
+
         if fetch {
             let url = format!("https://adventofcode.com/{}/day/{}/input", self.year, date)
                 .parse::<Url>()
@@ -81,11 +76,21 @@ impl Aoc {
             if status.is_server_error() {
                 return Err(format!("Internal Server Error: {}", text));
             }
+            let mut file = File::options()
+                .create(true)
+                .read(true)
+                .write(true)
+                .open(&cache_file_path)
+                .expect("Cannot open file");
             if let Err(e) = file.write_all(text.clone().into_bytes().by_ref()) {
                 eprintln!("Warning: Failed to write cache: {}", e.to_string());
             }
             Ok(text)
         } else {
+            let mut file = File::options()
+                .read(true)
+                .open(&cache_file_path)
+                .expect("Cannot open file");
             let mut text = String::new();
             file.read_to_string(&mut text)
                 .expect("Error when reading file");
