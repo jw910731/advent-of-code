@@ -1,6 +1,6 @@
 #![feature(proc_macro_span)]
 
-use std::fs;
+use std::{fs, path::Path};
 
 use proc_macro::{Span, TokenStream};
 use quote::TokenStreamExt;
@@ -31,10 +31,7 @@ pub fn match_module(input: TokenStream) -> TokenStream {
         let src_file = Span::call_site().source_file().path();
         let (src_dir, errors): (Vec<_>, Vec<_>) = src_file
             .parent()
-            .ok_or(Error::new(
-                Span::call_site().into(),
-                "cannot find module parent dir",
-            ))?
+            .unwrap_or(Path::new("./"))
             .read_dir()
             .map_err(|e| {
                 Error::new(
@@ -119,10 +116,10 @@ pub fn match_module(input: TokenStream) -> TokenStream {
                 format!("cannot parse identifier: {}", msg),
             ));
         }
+        let export_len = mod_names.len();
 
         let export_stmt = quote::quote_spanned! { mod_stmt.span() =>
-            use std::collections::HashMap;
-            const EXPORTS: &[(&str, #signature)] = &[
+            const EXPORTS: [(&str, #signature); #export_len] = [
                 #( (#mod_names, #mod_exports as #signature) ),*
             ];
         };
