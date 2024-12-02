@@ -7,6 +7,7 @@ use reqwest::header::COOKIE;
 use reqwest::{Client, Url};
 
 mod y2023;
+mod y2024;
 
 pub struct Aoc {
     year: i32,
@@ -36,9 +37,10 @@ impl Aoc {
             panic!("date must be in [1, 31]")
         }
         let solutions = match self.year {
-            2023 => y2023::get_solutions(),
-            _ => todo!(),
-        };
+            2023 => Ok(y2023::get_solutions()),
+            2024 => Ok(y2024::get_solutions()),
+            _ => Err("challenge of the year is not yet available".to_owned()),
+        }?;
         Ok(solutions[(date - 1) as usize](input))
     }
 
